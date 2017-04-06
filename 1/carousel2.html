@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>carousel1</title>
+  <style>
+    ul,li{
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    a {
+      text-decoration: none;
+      color: #fff;
+    }
+    .carousel {
+      width: 300px;
+      overflow: hidden;
+      position: relative;
+      height: 225px;
+    }
+    .carouselImg {
+      position: absolute;
+      top: 0;
+    }
+    .carouselImg::after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    .carouselImg  li {
+      width: 300px;
+      float: left;
+    }
+    .carouselImg li img {
+      width: 300px;
+      height: 225px;
+    }
+    .carousel .btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background-color: #ccc;
+      text-align: center;
+      line-height: 30px;
+      font-size: 20px;
+      position: absolute;
+      top: 50%;
+      margin-top: -15px;
+    }
+    .carousel .pre-btn {
+      left: 20px;
+    }
+    .carousel .next-btn {
+      right: 20px;
+    }
+    .navCt {
+      position: absolute;
+      text-align: center;
+      left: 0;
+      right: 0;
+      bottom: 20px;
+    }
+    .navCt ul {
+      display: inline-block;
+    }
+    .promo-nav li {
+      width: 20px;
+      height: 5px;
+      display: inline-block;
+      background-color: #fff;
+    }
+    .promo-nav li.active {
+      background-color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel">
+    <ul class="carouselImg">
+      <li data-img="0"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/26.jpg"></a></li>
+      <li data-img="1"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/25.jpg"></a></li>
+      <li data-img="2"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/24.jpg"></a></li>
+      <li data-img="3"><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/23.jpg"></a></li>
+    </ul>
+    <div class="btn pre-btn"><a href="#" >&lt;</a></div>
+    <div class="btn next-btn"><a href="#">&gt;</a></div>
+    <div class="navCt">
+      <ul class="promo-nav">
+        <li class="active"></li>
+        <li></li>
+        <li></li>
+        <li></li>
+      </ul>
+    </div>    
+  </div>
+  
+  <script src="jquery-3.2.0.min.js"></script>
+  <script>
+    var $imgUl=$(".carouselImg");
+    var preBtn=$(".pre-btn");
+    var nextBtn=$(".next-btn");
+    var $promoNavs=$(".promo-nav");
+
+    //每张图片的宽度
+    var imgWidth=$(".carouselImg img").width();
+    //未复制前的长度
+    var imgLength=$imgUl.children().length;
+    var pageIndex=0;
+    var isAnimate=false;//状态锁
+  //  var navIndex=0;
+    //复制 data-img=0,data-img=3
+    var firstImg=$imgUl.find("li").first();
+    var lastImg= $imgUl.find("li").last();       
+    $imgUl.prepend(lastImg.clone());
+    $imgUl.append(firstImg.clone());
+    //复制元素后将imgUl的宽度变大
+    $imgUl.css("width",imgWidth*$imgUl.children().length);
+    
+    $imgUl.css("left","-300px");
+    
+    preBtn.on("click",function(e){
+      e.preventDefault();    
+      playPre(1);   
+    })
+    nextBtn.on("click",function(e){
+      e.preventDefault();
+      playNext(1);
+    })
+   
+    $promoNavs.on("click","li",function(){
+      var length=$(this).index()-pageIndex;
+      if(length>=0){
+        playNext(length);
+      }
+      else{
+        length=-length;
+        playPre(length);
+      }
+      promoNav($(this).index());     
+    })
+    
+    function playNext(len){
+      if(isAnimate) return;
+      isAnimate=true;
+      $imgUl.animate({     
+        left: "-="+imgWidth*len
+      },function(){
+        pageIndex+=len;
+        if(pageIndex==imgLength){
+          $imgUl.css("left","-300px");
+          pageIndex=0;
+        }
+        promoNav(pageIndex);
+        isAnimate=false;
+      });     
+    }
+    
+    function playPre(len){
+      if(isAnimate) return;
+      isAnimate=true;
+      $imgUl.animate({
+        left: "+="+imgWidth*len
+      },function(){
+        pageIndex-=len;
+        if(pageIndex<0){
+          $imgUl.css("left","-1200px");
+          pageIndex=imgLength-1;
+        }
+        promoNav(pageIndex);
+        isAnimate=false;
+      });   
+    }
+       
+    function promoNav(index){
+      $promoNavs.children()
+                .removeClass("active")
+                .eq(index)
+                .addClass("active");
+    }
+  </script>
+</body>
+</html>
+
+
+ 
+  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
